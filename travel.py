@@ -21,30 +21,30 @@ if location1 and location2:
 
     print(f"\nDistance between {city1} and {city2} is {round(distance, 2)} KM")
 
+    # Travel cost per KM
+    
+    mode = {
+        "Bus":2,
+        "Train": 0.5,
+        "Car":12
+    }
+
     print("\nSelect Mode of Travel:")
-    print("1. Bus (₹2 per KM)")
-    print("2. Train (₹0.5 per KM)")
-    print("3. Car (₹12 per KM)")
+    print("Bus (₹2 per KM)")
+    print("Train (₹0.5 per KM)")
+    print("Car (₹12 per KM)")
 
-    choice = int(input("Enter your choice (1-3): "))
+    choice = input("Enter your choice: ")
 
-    if choice == 1:
-        cost = distance * 2
-        mode = "Bus"
-    elif choice == 2:
-        cost = distance * 0.5
-        mode = "Train"
-    elif choice == 3:
-        cost = distance * 12
-        mode = "Car"
+    if choice in mode:
+        rate = mode[choice]
+        cost = distance * rate
+        
+        print("\nMode of Travel:", choice)
+        print("Cost per KM: ₹", mode[choice])
+        print("Total Travel Cost: ₹", round(cost, 2))
     else:
         print("Invalid choice!")
-        cost = None
-
-    if cost is not None:
-        print("\nMode of Travel:", mode)
-        print("Total Travel Cost: ₹", round(cost, 2))
-
 else:
     print("Could not find one or both cities.")
 
@@ -56,8 +56,7 @@ elif budget >=5000 and budget <= 15000:
     print("Your selection type: Domestic Trip")
 else:
     print("Your Selection type: Primium Trip")
-    
-print("Select Your Prefference")
+
 
 Destinations = {
     "Mumbai": {
@@ -94,3 +93,36 @@ Destinations = {
         "Religious": ["Trimbakeshwar Jyotirlinga", "Kalaram Temple", "Sita Gufa - Panchavati", "Sundarnarayan Temple"],
     }
 }
+
+
+if city2 in Destinations:
+    print(f"\n{city2} is available in our destination list.")
+
+    print("\nAvailable Preferences:")
+    
+    preferences = list(Destinations[city2].keys())
+    
+    for i in range(len(preferences)):
+        print(i+1, ".", preferences[i])
+
+    pref_choice = int(input("Select your preference (Enter number): "))
+
+    if pref_choice >= 1 and pref_choice <= len(preferences):
+        selected_pref = preferences[pref_choice - 1]
+
+        print(f"\nPlaces for {selected_pref} in {city2}:")
+        
+        places = Destinations[city2][selected_pref]
+        
+        for place in places:
+            print("-", place)
+
+    else:
+        print("Invalid preference selection.")
+
+else:
+    print("\nThe entered city is not in our destination list.")
+    print("But I can suggest some other destinations:\n")
+
+    for city in Destinations.keys():
+        print("-", city)
