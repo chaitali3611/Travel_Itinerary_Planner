@@ -1,10 +1,6 @@
 from geopy.geocoders import Nominatim
 from geopy.distance import geodesic
 
-Dict = {"Railway": 0.5,
-        "Bus": 2,
-        "Car": 12}
-
 geolocator = Nominatim(user_agent="city_distance_calculator")
 
 city1 = input("Enter Source City: ")
