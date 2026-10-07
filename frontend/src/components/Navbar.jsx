@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Compass, Sparkles, Activity, MapPin, Database, Sun, Moon, RefreshCw } from 'lucide-react';
+import {
+  Compass,
+  Sparkles,
+  Database,
+  Sun,
+  Moon,
+  RefreshCw,
+  Map,
+  LayoutDashboard
+} from 'lucide-react';
 import { travelApi } from '../api/travelApi';
 
 export function Navbar({ currentView, onNavigate, onOpenPresets, onOpenCatalogs }) {
@@ -36,87 +45,105 @@ export function Navbar({ currentView, onNavigate, onOpenPresets, onOpenCatalogs 
 
   return (
     <header className="navbar">
-      <div className="container flex-between">
-        <div className="nav-brand" onClick={() => onNavigate('home')}>
-          <div className="nav-logo-icon">
-            <Compass size={24} />
-          </div>
-          <div>
-            <div className="nav-brand-title">
-              <span className="gradient-text">WanderPlan</span>
+      <div className="container">
+        <div className="navbar-inner">
+
+          {/* Brand */}
+          <div className="nav-brand" onClick={() => onNavigate('home')}>
+            <div className="nav-logo-icon">
+              <Compass size={22} strokeWidth={2.2} />
             </div>
-            <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', letterSpacing: '0.04em' }}>
-              SMART ITINERARY PLANNER
+            <div>
+              <div className="nav-brand-name">
+                <span className="gradient-text">WanderPlan</span>
+              </div>
+              <div className="nav-brand-sub">Smart Itinerary Planner</div>
             </div>
           </div>
+
+          {/* Center Navigation Pills */}
+          <nav className="nav-center">
+            <button
+              className={`nav-link-btn ${currentView === 'home' ? 'active' : ''}`}
+              onClick={() => onNavigate('home')}
+            >
+              <Map size={15} />
+              Home
+            </button>
+
+            <button
+              className={`nav-link-btn ${currentView === 'planner' ? 'active' : ''}`}
+              onClick={() => onNavigate('planner')}
+            >
+              <LayoutDashboard size={15} />
+              Planner
+            </button>
+
+            <button
+              className="nav-link-btn"
+              onClick={onOpenCatalogs}
+              title="Browse Destination, Hotel & Food Catalogs"
+            >
+              <Database size={15} />
+              Catalogs
+            </button>
+
+            <button
+              className="nav-link-btn"
+              onClick={onOpenPresets}
+              title="Explore Curated Ready-to-Plan Trips"
+            >
+              <Sparkles size={15} style={{ color: '#FBBF24' }} />
+              Presets
+            </button>
+          </nav>
+
+          {/* Right Side Controls */}
+          <div className="nav-right">
+            {/* Live API Health */}
+            <div
+              className={`health-badge ${backendHealth.online ? '' : 'offline'}`}
+              title={
+                backendHealth.online
+                  ? `FastAPI Backend Online — ${backendHealth.latency}ms`
+                  : 'FastAPI Backend Offline or Starting'
+              }
+              onClick={checkHealth}
+            >
+              <span className={`status-dot ${backendHealth.online ? '' : 'offline'}`} />
+              <span style={{ fontSize: '0.77rem' }}>
+                {backendHealth.checking
+                  ? 'Pinging...'
+                  : backendHealth.online
+                  ? `API · ${backendHealth.latency}ms`
+                  : 'Offline'}
+              </span>
+              <RefreshCw
+                size={11}
+                style={{ opacity: backendHealth.checking ? 1 : 0.55 }}
+                className={backendHealth.checking ? 'animate-spin-slow' : ''}
+              />
+            </div>
+
+            {/* Theme Toggle */}
+            <button
+              onClick={toggleTheme}
+              className="btn btn-ghost btn-sm"
+              title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
+              style={{
+                padding: '7px',
+                borderRadius: '50%',
+                width: 34,
+                height: 34,
+                border: '1px solid var(--border-medium)'
+              }}
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+          </div>
+
         </div>
-
-        <nav className="nav-links">
-          <button
-            className={`nav-link-btn ${currentView === 'home' ? 'active' : ''}`}
-            onClick={() => onNavigate('home')}
-          >
-            Home
-          </button>
-          
-          <button
-            className={`nav-link-btn ${currentView === 'planner' ? 'active' : ''}`}
-            onClick={() => onNavigate('planner')}
-          >
-            Trip Planner
-          </button>
-
-          <button
-            className="nav-link-btn"
-            onClick={onOpenCatalogs}
-            title="Browse Destination, Hotel & Food Catalogs"
-          >
-            <Database size={15} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
-            Catalogs
-          </button>
-
-          <button
-            className="nav-link-btn"
-            onClick={onOpenPresets}
-            title="Explore Curated Ready-to-Plan Trips"
-          >
-            <Sparkles size={15} style={{ verticalAlign: 'middle', marginRight: '4px', color: '#F59E0B' }} />
-            Presets
-          </button>
-
-          {/* Live API Health Status */}
-          <div
-            className={`health-badge ${backendHealth.online ? '' : 'offline'}`}
-            title={
-              backendHealth.online
-                ? `FastAPI Backend Online (${backendHealth.latency}ms)`
-                : 'FastAPI Backend Offline or Starting'
-            }
-            onClick={checkHealth}
-            style={{ cursor: 'pointer' }}
-          >
-            <span className={`status-dot ${backendHealth.online ? '' : 'offline'}`} />
-            <span>
-              {backendHealth.checking
-                ? 'Pinging...'
-                : backendHealth.online
-                ? `API Online (${backendHealth.latency}ms)`
-                : 'API Offline'}
-            </span>
-            <RefreshCw size={12} style={{ opacity: 0.7 }} />
-          </div>
-
-          {/* Theme Switch */}
-          <button
-            onClick={toggleTheme}
-            className="btn-secondary btn-sm"
-            title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
-            style={{ padding: '7px 10px', borderRadius: '50%' }}
-            aria-label="Toggle theme"
-          >
-            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-        </nav>
       </div>
     </header>
   );
